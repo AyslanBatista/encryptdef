@@ -1,7 +1,7 @@
 
 <p align="center">
   <a href="https://github.com/AyslanBatista/encryptdef">
-    <img src="/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 60%; height: auto;">
+    <img src="/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 80%; height: auto;">
   </a>
 </p>
 
