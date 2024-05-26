@@ -1,13 +1,18 @@
 
 <p align="center">
   <a href="https://github.com/AyslanBatista/encryptdef">
-    <img src="/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 50%; height: auto;">
+    <img src="/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 60%; height: auto;">
   </a>
 </p>
 
+<p align="center">
+<a href="https://github.com/AyslanBatista/encryptdef?tab=Unlicense-1-ov-file#readme" target="_blank">
+    <img src="https://img.shields.io/badge/license-MIT-007EC7.svg?color=%2334D058" alt="License">
+</a>
+</p>
 
 ---
-Encryptdef é uma ferramenta de linha de comando em Python para encriptar e desencriptar dados e arquivos de forma segura, utilizando criptografia de última geração e uma chave de criptografia fornecida pelo usuário. Proteja suas informações confidenciais e arquivos importantes contra acesso não autorizado com o Encryptdef.
+**Encryptdef** é uma ferramenta de linha de comando em Python para encriptar e desencriptar dados e arquivos de forma segura, utilizando criptografia de última geração e uma chave de criptografia fornecida pelo usuário. Proteja suas informações confidenciais e arquivos importantes contra acesso não autorizado com o Encryptdef.
 
 ### Como Funciona
 
