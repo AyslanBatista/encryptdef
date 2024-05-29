@@ -34,149 +34,34 @@ cd encryptdef
 ```
 3. Instale as dependências:
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
-
-## Uso:
-- Dentro do diretório encryptdef, rode o comando:
-```bash
-python3 __main__.py
-```
-
-## Encriptar/Desencriptar Dados:
-
 <code><b>Importante: Mantenha a chave de encriptação em segredo e não a perca. Sem a chave correta, não será possível desencriptar os dados ou arquivos.</b></code>
 
-##### 🔒 ENCRIPTAÇÃO
 
-1. Escolha a opção `1`.
-
-```bash
- [E N C R I P T A Ç Ã O] / [D E C R I P T A Ç Ã O] ?
-
- [1] 🔒 ENCRIPTAÇÃO.
- [2] 🔓 DECRIPTAÇÃO.
-
- [?] : 1
- ```
-
-2. Digite os dados que deseja encriptar.
-3. Digite a chave que será usada para desencriptar esses dados.
-
- ```bash
- 🔒 [E N C R I P T A Ç Ã O]
-
- [!] 🔠 DEGITE A INFORAMAÇÃO QUE DESEJA ENCRYPTA: encriptando essa frase
- [!] 🔑 DEGITE A KEY PARA ENCRIPTAÇÃO:12345
-
- [-] 🔒 ENCRIPTADO: Vrq94RCrSK8RTo6ZcI/ZeTkDttCgRQ==*NDqpAuKi6JbhylWKghksDA==*FLCQDFgq+qbtaLGvjHt0lA==*FLRIxTFgf0lYIwtaz7xx1A==
- [-] 🔑 KEY: 12345
-
- [?] PRESSIONE ENTER PARA CONTINUAR, OU QUALQUER TECLA PARA SAIR:
- ```
-
-
- ##### 🔑 DECRIPTAÇÃO
-1. Escolha a opção `2`.
+## Como usar:
+#### Modo CLI
 
 ```bash
- [E N C R I P T A Ç Ã O] / [D E C R I P T A Ç Ã O] ?
-
- [1] 🔒 ENCRIPTAÇÃO.
- [2] 🔓 DECRIPTAÇÃO.
-
- [?] : 2
+encryptdef --help
 ```
-2. Digite os dados encriptados.
-3. Digite a chave usada para encriptar os dados.
-
+- Você pode encriptar e desencriptar textos e arquivos usando os argumentos `encrypt` e `decrypt`.
+- Para trabalhar com textos, use `--message=`.
+- Para trabalhar com arquivos, use `--file=`.
+ 
+- Você pode informar a chave que está dentro de um arquivo usando `--keyfile=`. Caso você não passe o argumento, será solicitado a chave:
 ```bash
- 🔓 [D E C R I P T A Ç Ã O]
+encryptdef encrypt --message="testando"
+🔑 DIGITE A CHAVE DE ENCRIPTAÇÃO:
 
- [!] 🔠 DEGITE O TEXTO ENCRIPTADO: Vrq94RCrSK8RTo6ZcI/ZeTkDttCgRQ==*NDqpAuKi6JbhylWKghksDA==*FLCQDFgq+qbtaLGvjHt0lA==*FLRIxTFgf0lYIwtaz7xx1A==
- [!] 🔑 DEGITE A KEY DA ENCRIPTAÇÃO:12345
+🔒 [D A D O S -- E N C R I P T A D O S] 🔒
 
- 🔐 [D E C R I P T A N D O. . .]
+🔒 ENCRIPTADO: ZOvi7HOjsx4=*hsyuvGWe3i+QFehOCgC/ZA==*Bx0nvNmsg5RR0frUZENoKA==*P7uzyE4dfTAKPqBcHooOow==
 
-
- [!] 🔓 DECODIFICADO: encriptando essa frase
- [!] 🔑 KEY: 12345
-
- [?] PRESSIONE ENTER PARA CONTINUAR, OU QUALQUER TECLA PARA SAIR:
 ```
 
-
-## Encriptar/Desencriptar Arquivos:
-##### 🔒 ENCRIPTAÇÃO
-
-1. Escolha a opção `1`.
-
+#### Modo Interativo
 ```bash
- [E N C R I P T A Ç Ã O] / [D E C R I P T A Ç Ã O] ?
-
- [1] 🔒 ENCRIPTAÇÃO.
- [2] 🔓 DECRIPTAÇÃO.
-
- [?] : 1
- ```
-1. Digite o nome do arquivo que deseja encriptar _(o arquivo deve estar na raiz do programa)_.
-
-2. Digite a chave que será usada para desencriptar os dados do arquivo.
-
-3. Digite um nome para o arquivo encriptado que será gerado.
-
-```bash
- [file] 📄 DIGITE O NOME DO ARQUIVO QUE DESEJA ENCRIPTAR: teste
- [key] 🔑 DEGITE A KEY PARA ENCRIPTAÇÃO: 123
- [new-file] 🔒📄 DIGITE O NOME PARA O NOVO ARQUIVO ECRIPTADO: encript-teste
-
- 🔒 [A R Q U I V O -- E N C R I P T A D O]
-
- /tmp/encript-teste
-
- [?] PRESSIONE ENTER PARA CONTINUAR, OU QUALQUER TECLA PARA SAIR:
+encryptdef
 ```
-
- ##### 🔑 DECRIPTAÇÃO
-1. Escolha a opção `2`.
-
-```bash
- [E N C R I P T A Ç Ã O] / [D E C R I P T A Ç Ã O] ?
-
- [1] 🔒 ENCRIPTAÇÃO.
- [2] 🔓 DECRIPTAÇÃO.
-
- [?] : 2
-
-```
-1. Digite o nome do arquivo que deseja decriptar _(o arquivo deve estar na raiz do programa)_.
-
-2. Digite a chave usada para encriptar os dados do arquivo.
-
-3. Digite um nome para o arquivo decriptado que será gerado.
-```bash
- [file] 🔒📄 DIGITE O NOME DO ARQUIVO ENCRIPTADO: encript-teste
- [key] 🔑 DEGITE A KEY DA ENCRIPTAÇÃO: 123
- [new-file] 📄 DIGITE O NOME PARA O NOVO ARQUIVO DECRIPTADO: testando
-
- 🔓 [A R Q U I V O -- D E C R I P T A D O]
-
- 📄 /tmp/testando
-
- [?] PRESSIONE ENTER PARA CONTINUAR, OU QUALQUER TECLA PARA SAIR:
-```
-
-## Contribuição
-
-Contribuições são bem-vindas! Se você encontrar algum problema ou tiver sugestões de melhoria, sinta-se à vontade para abrir uma issue ou enviar um pull request.
-
-Para contribuir, siga estas etapas:
-
-1. Faça um fork do projeto.
-2. Crie uma nova branch: `git checkout -b minha-nova-feature`.
-3. Faça suas alterações e adicione commits: `git commit -am 'Adiciona nova feature'`.
-4. Faça push para a branch: `git push origin minha-nova-feature`.
-5. Abra um Pull Request no GitHub.
-
-Obrigado por contribuir!
-
+![](./assets/encryptdef_interativo.gif)

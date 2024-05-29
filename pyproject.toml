@@ -1,0 +1,62 @@
+[project]
+name = "encryptdef"
+description = "Projeto em python para criptografar e descriptografar dados e arquivos de forma interativa e CLI"
+authors = [{ name = "Ayslan Batista", email = "ayslan.batista@hotmail.com" }]
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+
+[project.urls]
+Source = 'https://github.com/AyslanBatista/encryptdef'
+
+# Lista de quais são os nomes dos entrypoints e os pacotes entrypoints
+[project.scripts]
+# Forma de usar diretamente o programa ex: encryptdef --version
+encryptdef = "encryptdef.__main__:main"
+
+[build-system]
+# Setuptools acima da versão 45
+# setuptools_scm utilizar o git tag v1.0.1
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+packages = ["encryptdef"]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"]}
+dependencies = {file = "requirements.txt"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = "requirements.dev.txt"}
+
+[tool.setuptools_scm]
+write_to = "encryptdef/VERSION.txt"
+
+[tool.flake8]
+exclude = [".venv", "build", ".vscodelocal", "migrations", "template.py"]
+max-line-length = 79
+
+[tool.black]
+line-length = 79
+target-version = ['py310', 'py311']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | _build
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+src_paths = "encryptdef"
+multi_line_output = 3                          
+line_length = 79
+force_grid_wrap = 0
+use_parentheses = true
+include_trailing_comma = true
