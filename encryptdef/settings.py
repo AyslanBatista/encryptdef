@@ -5,6 +5,8 @@ import os
 from rich.console import Console
 from rich.theme import Theme
 
+CURRENT_DIR = os.getcwd()
+
 CUSTOM_THEME = Theme(
     {
         "critical": "bold red",
@@ -15,4 +17,3 @@ CUSTOM_THEME = Theme(
     }
 )
 console = Console(theme=CUSTOM_THEME)
-CURRENT_DIR = os.getcwd()

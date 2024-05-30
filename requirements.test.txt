@@ -1,0 +1,6 @@
+#teste
+pytest
+
+# coverage
+coverage
+pytest-cov

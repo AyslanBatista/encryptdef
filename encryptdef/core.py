@@ -36,6 +36,7 @@ from encryptdef.template import (
     TEMPLATE_FILE_NOT_FOUND,
     TEMPLATE_INFO_FILE,
     TEMPLATE_INVALID_KEY,
+    TEMPLATE_IS_DIRECTORY,
     TEMPLATE_MENU_ENCRYPT_DECRYPT,
     TEMPLATE_MENU_MESSAGE_FILE,
     TEMPLATE_TASK_DESCRIPTION,
@@ -43,19 +44,20 @@ from encryptdef.template import (
 )
 
 
-def get_new_file_path(file: str, new_file: str) -> str:
+def get_new_file_path(file: str, new_file: str, current_dir: str) -> str:
     """
     Retorna o caminho completo do novo arquivo.
 
     Args:
         file (str): Caminho do arquivo original.
         new_file (str): Nome do novo arquivo.
+        current_dir (str): Caminho do diretório atual.
 
     Returns:
         str: Caminho completo do novo arquivo.
     """
     return (
-        os.path.join(CURRENT_DIR, new_file)
+        os.path.join(current_dir, new_file)
         if not os.path.isabs(file)
         else new_file
     )
@@ -70,9 +72,6 @@ def read_file(file: str) -> List[str]:
 
     Returns:
         List[str]: Lista de linhas do arquivo.
-
-    Raises:
-        FileNotFoundError: Se o arquivo não for encontrado.
     """
     with open(file, "r", encoding="utf-8", errors="ignore") as file_:
         return file_.readlines()
@@ -85,9 +84,6 @@ def write_file(new_file_path: str, processed_lines: List[str]) -> None:
     Args:
         new_file_path (str): Caminho do novo arquivo.
         processed_lines (List[str]): Lista de linhas processadas.
-
-    Raises:
-        IOError: Se ocorrer um erro ao escrever no arquivo.
     """
     with open(new_file_path, "w", encoding="utf-8") as file_a:
         file_a.writelines(processed_lines)
@@ -112,11 +108,7 @@ def process_lines(
 
     Returns:
         List[str]: Lista de linhas processadas.
-
-    Raises:
-        Exception: Se ocorrer um erro durante o processamento das linhas.
     """
-    # Lista para armazenar as linhas processadas com seus índices originais
     indexed_processed_lines = []
 
     with Progress() as progress:
@@ -173,9 +165,14 @@ def process_file(
         bool: True se o processamento for bem-sucedido, False caso contrário.
     """
     file, key, new_file = data_list
-    new_file_path = get_new_file_path(file, new_file)
 
     try:
+        new_file_path = get_new_file_path(file, new_file, CURRENT_DIR)
+
+        for path in [file, new_file_path]:
+            if os.path.isdir(path):
+                raise IsADirectoryError(TEMPLATE_IS_DIRECTORY % path)
+
         lines = read_file(file)
         max_workers = print_get_max_workers(lines)
         processed_lines = process_lines(
@@ -207,6 +204,10 @@ def process_file(
         return False
 
     except TypeError as e:
+        print_and_record_log(str(e), "error")
+        return False
+
+    except IsADirectoryError as e:
         print_and_record_log(str(e), "error")
         return False
 
