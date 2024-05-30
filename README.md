@@ -6,6 +6,12 @@
 </p>
 
 <p align="center">
+<a href="https://github.com/AyslanBatista/encryptdef/actions/workflows/main.yml" target="_blank">
+    <img src="https://github.com/AyslanBatista/encryptdef/actions/workflows/main.yml/badge.svg" alt="Test">
+</a>
+<a href="https://codecov.io/gh/AyslanBatista/encryptdef" > 
+    <img src="https://codecov.io/gh/AyslanBatista/encryptdef/branch/main/graph/badge.svg?token=JW21dkelbB"/> 
+</a>
 <a href="https://github.com/AyslanBatista/encryptdef?tab=Unlicense-1-ov-file#readme" target="_blank">
     <img src="https://img.shields.io/badge/license-MIT-007EC7.svg?color=%2334D058" alt="License">
 </a>
