@@ -2,12 +2,12 @@
 name = "encryptdef"
 description = "Projeto em python para criptografar e descriptografar dados e arquivos de forma interativa e CLI"
 authors = [{ name = "Ayslan Batista", email = "ayslan.batista@hotmail.com" }]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
 
 [project.urls]
-Source = 'https://github.com/AyslanBatista/encryptdef'
+Source = "https://github.com/AyslanBatista/encryptdef"
 
 # Lista de quais são os nomes dos entrypoints e os pacotes entrypoints
 [project.scripts]
@@ -18,7 +18,7 @@ encryptdef = "encryptdef.__main__:main"
 # Setuptools acima da versão 45
 # setuptools_scm utilizar o git tag v1.0.1
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = 'setuptools.build_meta'
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["encryptdef"]
@@ -29,9 +29,17 @@ dependencies = {file = "requirements.txt"}
 
 [tool.setuptools.dynamic.optional-dependencies]
 dev = {file = "requirements.dev.txt"}
+test = {file = "requirements.test.txt"}
 
 [tool.setuptools_scm]
 write_to = "encryptdef/VERSION.txt"
+version_scheme = "guess-next-dev" # determina como a versão principal é calculada.
+local_scheme = "no-local-version" # determina a parte local (como dev1+g7aff1b9.d20240529).
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q -vv"
+testpaths = "tests"
 
 [tool.flake8]
 exclude = [".venv", "build", ".vscodelocal", "migrations", "template.py"]
@@ -39,7 +47,7 @@ max-line-length = 79
 
 [tool.black]
 line-length = 79
-target-version = ['py310', 'py311']
+target-version = ["py310", "py311"]
 exclude = '''
 /(
     \.eggs
@@ -54,7 +62,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
-src_paths = "encryptdef"
+src_paths = ["encryptdef", "tests"]
 multi_line_output = 3                          
 line_length = 79
 force_grid_wrap = 0

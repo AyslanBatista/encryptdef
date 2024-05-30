@@ -1,17 +1,35 @@
-.PHONY: install virtualenv lint fmt clean build publish-test publish
+.PHONY: install virtualenv lint fmt test clean build publish-test publish
+
+# Detectar o sistema operacional
+OS := $(shell uname)
 
 # Variáveis para simplificar comandos
-VENV_BIN=.venv/bin
+VENV_DIR=.venv
+VENV_BIN=$(VENV_DIR)/bin
 PYTHON=$(VENV_BIN)/python
-PIP=$(PYTHON) -m pip
+PIP=$(VENV_BIN)/pip
+
+# Comando para ativar o ambiente virtual
+ifeq ($(OS), Linux)
+    ACTIVATE_VENV=. $(VENV_BIN)/activate
+endif
+ifeq ($(OS), Darwin) # macOS
+    ACTIVATE_VENV=. $(VENV_BIN)/activate
+endif
+ifeq ($(OS), Windows_NT)
+    ACTIVATE_VENV=$(VENV_DIR)\Scripts\activate
+    VENV_BIN=$(VENV_DIR)\Scripts
+endif
 
 install: ## Instalar dependências para o ambiente de desenvolvimento
 	@echo "Instalando dependências para o ambiente de desenvolvimento..."
-	@$(PIP) install -e '.[dev]'
+	@$(PIP) install -e '.[test,dev]'
 
-virtualenv: ## Criar ambiente virtual
+virtualenv: ## Criar ambiente virtual e instalar dependências
 	@echo "Criando ambiente virtual..."
-	@python -m venv .venv
+	@python -m venv $(VENV_DIR)
+	@echo "Instalando dependências no ambiente virtual..."
+	@$(PIP) install -e '.[test,dev]'
 
 lint: ## Executar linters
 	@echo "Executando linters..."
@@ -20,8 +38,15 @@ lint: ## Executar linters
 
 fmt: ## Formatar código
 	@echo "Formatando código..."
-	@$(VENV_BIN)/isort encryptdef
-	@$(VENV_BIN)/black encryptdef
+	@$(VENV_BIN)/isort encryptdef tests
+	@$(VENV_BIN)/black encryptdef tests
+
+test: ## Rodando os Testes
+	@echo "Rodando os Testes..."
+	@$(VENV_BIN)/pytest --cov=encryptdef
+	@$(VENV_BIN)/coverage xml
+	@$(VENV_BIN)/coverage html
+
 
 clean: ## Limpar arquivos desnecessários
 	@echo "Limpando arquivos desnecessários..."
