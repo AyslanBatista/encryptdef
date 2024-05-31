@@ -3,4 +3,5 @@
 from encryptdef.cli import main
 
 if __name__ == "__main__":
-    main()
+    # Passando um contexto vazio
+    main(ctx=None)
