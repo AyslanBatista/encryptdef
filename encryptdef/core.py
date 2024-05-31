@@ -1,20 +1,23 @@
 """Módulo que contém as funções principais da ferramenta"""
 
-import os
+import hashlib
 import sys
+from base64 import b64decode, b64encode
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Callable, List, Optional, Union
 
 import rich_click as click
+from Cryptodome.Cipher import AES
+from Cryptodome.Random import get_random_bytes
 from rich.progress import Progress
 
-from encryptdef.cryptocode import InvalidEncryptedFormat, decrypt, encrypt
 from encryptdef.interactive_interface import (
     print_continue_or_leave,
     print_get_max_workers,
     print_request_menu,
     print_requesting_file,
     print_requesting_message,
+    print_success_message,
 )
 from encryptdef.log import print_and_record_log
 from encryptdef.settings import CURRENT_DIR, console
@@ -33,60 +36,140 @@ from encryptdef.template import (
     TEMPLATE_ENCRYPTED_FILE,
     TEMPLATE_ENCRYPTED_MESSAGE,
     TEMPLATE_ERROR_EMPTY_FIELD,
+    TEMPLATE_ERROR_INVALID_ENCRYPTED_FORMAT,
     TEMPLATE_FILE_NOT_FOUND,
     TEMPLATE_INFO_FILE,
     TEMPLATE_INVALID_KEY,
-    TEMPLATE_IS_DIRECTORY,
     TEMPLATE_MENU_ENCRYPT_DECRYPT,
     TEMPLATE_MENU_MESSAGE_FILE,
     TEMPLATE_TASK_DESCRIPTION,
     TEMPLATE_TYPE_ERROR,
 )
+from encryptdef.utils import get_new_file_path, read_file, write_file
 
 
-def get_new_file_path(file: str, new_file: str, current_dir: str) -> str:
+class InvalidEncryptedFormat(Exception):
+    """Formato de string criptografada inválido"""
+
+
+class InvalidKey(Exception):
+    """Formato de string criptografada inválido"""
+
+
+def encrypt(message: str, password: str) -> str:
     """
-    Retorna o caminho completo do novo arquivo.
+    Criptografa uma mensagem usando AES GCM com uma chave derivada por Scrypt.
 
     Args:
-        file (str): Caminho do arquivo original.
-        new_file (str): Nome do novo arquivo.
-        current_dir (str): Caminho do diretório atual.
+        message (str): A mensagem que será criptografada.
+        password (str): A senha usada para derivar a chave de criptografia.
 
     Returns:
-        str: Caminho completo do novo arquivo.
+        str: A mensagem criptografada contendo texto cifrado, salt,
+        nonce e tag.
     """
-    return (
-        os.path.join(current_dir, new_file)
-        if not os.path.isabs(file)
-        else new_file
+    # Gera um salt aleatório
+    salt = get_random_bytes(AES.block_size)
+
+    # Usa Scrypt para derivar a chave privada a partir da senha
+    private_key = hashlib.scrypt(
+        password.encode(), salt=salt, n=2**14, r=8, p=1, dklen=32
+    )
+
+    # Cria a configuração do cifrador em modo GCM
+    cipher = AES.new(private_key, AES.MODE_GCM)
+    cipher_text, tag = cipher.encrypt_and_digest(message.encode("utf-8"))
+
+    # Codifica em base64 e retorna uma string formatada
+    encrypted_parts = {
+        "cipher_text": b64encode(cipher_text).decode("utf-8"),
+        "salt": b64encode(salt).decode("utf-8"),
+        "nonce": b64encode(cipher.nonce).decode("utf-8"),
+        "tag": b64encode(tag).decode("utf-8"),
+    }
+
+    return "*".join(encrypted_parts.values())
+
+
+def decrypt(enc_string: str, password: str) -> str:
+    """
+    Descriptografa uma mensagem criptografada usando AES GCM com uma chave
+    derivada por Scrypt.
+
+    Args:
+        enc_string (str): A mensagem criptografada.
+        password (str): A senha usada para derivar a chave de descriptografia.
+
+    Returns:
+        str: A mensagem descriptografada ou uma mensagem de erro.
+    """
+    try:
+        enc_parts = enc_string.split("*")
+        if len(enc_parts) != 4:
+            raise InvalidEncryptedFormat(
+                TEMPLATE_ERROR_INVALID_ENCRYPTED_FORMAT
+            )
+
+        # Decodifica as partes criptografadas de base64
+        cipher_text, salt, nonce, tag = map(b64decode, enc_parts)
+
+        # Gera a chave privada a partir da senha e do salt
+        private_key = hashlib.scrypt(
+            password.encode(), salt=salt, n=2**14, r=8, p=1, dklen=32
+        )
+
+        # Cria a configuração do cifrador em modo GCM
+        cipher = AES.new(private_key, AES.MODE_GCM, nonce=nonce)
+
+        # Descriptografa o texto cifrado e verifica a tag
+        decrypted = cipher.decrypt_and_verify(cipher_text, tag)
+
+        return decrypted.decode("utf-8")
+
+    except ValueError as e:
+        raise InvalidKey(TEMPLATE_INVALID_KEY) from e
+
+
+def encrypt_message(message: str, key: str) -> None:
+    """
+    Criptografa os dados usando a chave fornecida e exibe o resultado.
+
+    Args:
+        message (str): Dados a serem criptografados.
+        key (str): Chave para criptografia.
+    """
+    encrypted_message = encrypt(message, key)
+    print_success_message(
+        encrypted_message, TEMPLATE_ENCRYPTED_MESSAGE, TEMPLATE_ENCRYPTED
     )
 
 
-def read_file(file: str) -> List[str]:
+def decrypt_message(message: str, key: str) -> bool:
     """
-    Lê o conteúdo do arquivo e retorna uma lista de linhas.
+    Descriptografa os dados usando a chave fornecida. Se a descriptografia
+    falhar, retorna False; caso contrário, exibe o resultado e retorna True.
 
     Args:
-        file (str): Caminho do arquivo a ser lido.
+        message (str): Dados a serem descriptografados.
+        key (str): Chave para descriptografia.
 
     Returns:
-        List[str]: Lista de linhas do arquivo.
+        bool: True se a descriptografia for bem-sucedida, False caso contrário.
     """
-    with open(file, "r", encoding="utf-8", errors="ignore") as file_:
-        return file_.readlines()
+    try:
+        decrypted_message = decrypt(message, key)
 
+        if isinstance(decrypted_message, str):
+            print_success_message(
+                decrypted_message,
+                TEMPLATE_DECRYPTED_MESSAGE,
+                TEMPLATE_DECRYPTED,
+            )
+            return True
 
-def write_file(new_file_path: str, processed_lines: List[str]) -> None:
-    """
-    Escreve as linhas processadas em um novo arquivo.
-
-    Args:
-        new_file_path (str): Caminho do novo arquivo.
-        processed_lines (List[str]): Lista de linhas processadas.
-    """
-    with open(new_file_path, "w", encoding="utf-8") as file_a:
-        file_a.writelines(processed_lines)
+    except (InvalidEncryptedFormat, InvalidKey) as e:
+        print_and_record_log(str(e), "error")
+    return False
 
 
 def process_lines(
@@ -102,8 +185,7 @@ def process_lines(
         lines (List[str]): Lista de linhas do arquivo.
         key (str): Chave para criptografar ou descriptografar.
         process_line_func (Callable[[str, str], Union[str, bool]]): Função para
-        processar
-        cada linha.
+        processar cada linha.
         max_workers (int): Número máximo de núcleos da CPU a serem usados.
 
     Returns:
@@ -126,9 +208,6 @@ def process_lines(
             for future in as_completed(future_to_index):
                 result = future.result()
 
-                if result is False:
-                    raise ValueError(TEMPLATE_INVALID_KEY)
-
                 if not isinstance(result, str):
                     raise TypeError(TEMPLATE_TYPE_ERROR % {type(result)})
 
@@ -147,6 +226,45 @@ def process_lines(
     return [line + "\n" for index, line in indexed_processed_lines]
 
 
+def process_file_content(
+    file: str,
+    key: str,
+    new_file_path: str,
+    process_line_func: Callable[[str, str], Union[str, bool]],
+) -> bool:
+    """
+    Processa o conteúdo de um arquivo e salva o resultado em um novo arquivo.
+
+    Args:
+        file (str): Caminho do arquivo original.
+        key (str): Chave para criptografar ou descriptografar.
+        new_file_path (str): Caminho do novo arquivo.
+        process_line_func (Callable[[str, str], Union[str, bool]]): Função para
+        processar cada linha.
+
+    Returns:
+        bool: True se o processamento for bem-sucedido, False caso contrário.
+    """
+    lines = read_file(file)
+    max_workers = print_get_max_workers(lines)
+    processed_lines = process_lines(lines, key, process_line_func, max_workers)
+
+    if not processed_lines:
+        return False
+
+    write_file(new_file_path, processed_lines)
+    print_and_record_log(
+        (
+            TEMPLATE_ENCRYPTED_FILE % new_file_path
+            if process_line_func is encrypt
+            else TEMPLATE_DECRYPTED_FILE % new_file_path
+        ),
+        "debug",
+    )
+
+    return True
+
+
 def process_file(
     data_list: List[str],
     process_line_func: Callable[[str, str], Union[str, bool]],
@@ -158,8 +276,7 @@ def process_file(
     Args:
         data_list (List[str]): Lista contendo [arquivo, chave, novo_arquivo].
         process_line_func (Callable[[str, str], Union[str, bool]]): Função para
-        processar
-        cada linha do arquivo.
+        processar cada linha do arquivo.
 
     Returns:
         bool: True se o processamento for bem-sucedido, False caso contrário.
@@ -168,114 +285,21 @@ def process_file(
 
     try:
         new_file_path = get_new_file_path(file, new_file, CURRENT_DIR)
-
-        for path in [file, new_file_path]:
-            if os.path.isdir(path):
-                raise IsADirectoryError(TEMPLATE_IS_DIRECTORY % path)
-
-        lines = read_file(file)
-        max_workers = print_get_max_workers(lines)
-        processed_lines = process_lines(
-            lines, key, process_line_func, max_workers
+        return process_file_content(
+            file, key, new_file_path, process_line_func
         )
-
-        if not processed_lines:
-            return False
-
-        write_file(new_file_path, processed_lines)
-        print_and_record_log(
-            (
-                TEMPLATE_ENCRYPTED_FILE % new_file_path
-                if process_line_func is encrypt
-                else TEMPLATE_DECRYPTED_FILE % new_file_path
-            ),
-            "debug",
-        )
-
-        return True
 
     except FileNotFoundError:
         print_and_record_log(TEMPLATE_FILE_NOT_FOUND % file, "error")
         console.print(TEMPLATE_INFO_FILE)
         return False
 
-    except ValueError as e:
-        print_and_record_log(str(e), "error")
-        return False
-
-    except TypeError as e:
-        print_and_record_log(str(e), "error")
-        return False
-
-    except IsADirectoryError as e:
-        print_and_record_log(str(e), "error")
-        return False
-
-
-def encrypt_file(data_list: List[str]) -> bool:
-    """
-    Criptografa o conteúdo de um arquivo linha por linha e salva o resultado
-    em um novo arquivo.
-
-    Args:
-        data_list (List[str]): Lista contendo [arquivo, chave, novo_arquivo].
-
-    Returns:
-        bool: True se a criptografia for bem-sucedida, False caso contrário.
-    """
-    return process_file(data_list, encrypt)
-
-
-def decrypt_file(data_list: List[str]) -> bool:
-    """
-    Descriptografa o conteúdo de um arquivo linha por linha e salva o resultado
-    em um novo arquivo.
-
-    Args:
-        data_list (List[str]): Lista contendo [arquivo, chave, novo_arquivo].
-
-    Returns:
-        bool: True se a descriptografia for bem-sucedida, False caso contrário.
-    """
-    return process_file(data_list, decrypt)
-
-
-def encrypt_message(message: str, key: str) -> None:
-    """
-    Criptografa os dados usando a chave fornecida e exibe o resultado.
-
-    Args:
-        message (str): Dados a serem criptografados.
-        key (str): Chave para criptografia.
-    """
-    encrypted_message = encrypt(message, key)
-    print_and_record_log(TEMPLATE_ENCRYPTED_MESSAGE, "debug")
-    print_and_record_log(TEMPLATE_ENCRYPTED % encrypted_message, "debug")
-
-
-def decrypt_message(message: str, key: str) -> bool:
-    """
-    Descriptografa os dados usando a chave fornecida. Se a descriptografia
-    falhar, retorna False; caso contrário, exibe o resultado e retorna True.
-
-    Args:
-        message (str): Dados a serem descriptografados.
-        key (str): Chave para descriptografia.
-
-    Returns:
-        bool: True se a descriptografia for bem-sucedida, False caso contrário.
-    """
-    try:
-        decrypted_message = decrypt(message, key)
-        if not decrypted_message:
-            print_and_record_log(TEMPLATE_INVALID_KEY, "error")
-            return False
-
-        print_and_record_log(TEMPLATE_DECRYPTED_MESSAGE, "debug")
-        print_and_record_log(TEMPLATE_DECRYPTED % decrypted_message, "debug")
-        return True
-
-    except InvalidEncryptedFormat as e:
+    except (
+        TypeError,
+        IsADirectoryError,
+        InvalidEncryptedFormat,
+        InvalidKey,
+    ) as e:
         print_and_record_log(str(e), "error")
         return False
 
@@ -347,11 +371,13 @@ def interactive_mode() -> None:
     """
     while True:
         file_message_option = print_request_menu(TEMPLATE_MENU_MESSAGE_FILE)
+
         match file_message_option:
             case 1:
                 message_encrypt_decrypt_option = print_request_menu(
                     TEMPLATE_MENU_ENCRYPT_DECRYPT
                 )
+
                 match message_encrypt_decrypt_option:
                     case 1:
                         message, key = print_requesting_message(
@@ -373,12 +399,12 @@ def interactive_mode() -> None:
                         file_list = print_requesting_file(
                             TEMPLATE_ENCRYPT_FILE
                         )
-                        encrypt_file(file_list)
+                        process_file(file_list, encrypt)
                     case 2:
                         file_list = print_requesting_file(
                             TEMPLATE_DECRYPT_FILE
                         )
-                        decrypt_file(file_list)
+                        process_file(file_list, decrypt)
 
         if print_continue_or_leave(TEMPLATE_CONTINUE_LEAVE):
             break

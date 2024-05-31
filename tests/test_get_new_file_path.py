@@ -1,8 +1,8 @@
-""" Modulo para testar a função get_new_file_path"""
+""" Modulo para testar a função get_new_file_path em utils.py"""
 
 import os
 
-from encryptdef.core import get_new_file_path
+from encryptdef.utils import get_new_file_path
 
 
 def test_get_new_file_path_positive():
