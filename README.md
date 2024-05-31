@@ -12,6 +12,9 @@
 <a href="https://codecov.io/gh/AyslanBatista/encryptdef" > 
     <img src="https://codecov.io/gh/AyslanBatista/encryptdef/branch/main/graph/badge.svg?token=JW21dkelbB"/> 
 </a>
+<a href="https://app.codacy.com/gh/AyslanBatista/encryptdef/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade">
+  <img src="https://app.codacy.com/project/badge/Grade/9671954a158345898198c1419212a271">
+</a>
 <a href="https://github.com/AyslanBatista/encryptdef?tab=Unlicense-1-ov-file#readme" target="_blank">
     <img src="https://img.shields.io/badge/license-MIT-007EC7.svg?color=%2334D058" alt="License">
 </a>
