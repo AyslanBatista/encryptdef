@@ -1,7 +1,7 @@
 """Módulo responsável por todos os comandos CLI"""
 
 from importlib.metadata import version
-from typing import Any, List, Optional
+from typing import List, Optional
 
 import rich_click as click
 
@@ -21,7 +21,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 @click.group(invoke_without_command=True)
 @click.version_option(version("encryptdef"))
 @click.pass_context
-def main(ctx: Any) -> None:
+def main(ctx: Optional[click.Context] = None) -> None:
     """Encryptdef
 
     Ferramenta de linha de comando em Python para encriptar e desencriptar
@@ -40,6 +40,9 @@ def main(ctx: Any) -> None:
     > **Mantenha a chave de encriptação em segredo e não a perca. Sem a chave
     correta, não será possível desencriptar os dados ou arquivos.**
     """
+    if ctx is None:
+        ctx = click.Context(main)
+
     if ctx.invoked_subcommand is None:
         core.interactive_mode()
 

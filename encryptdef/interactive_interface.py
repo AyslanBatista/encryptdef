@@ -15,6 +15,7 @@ from encryptdef.template import (
     TEMPLATE_INFO,
     TEMPLATE_LOGO,
 )
+from encryptdef.utils import clear_console
 
 
 def print_template_logo(info: bool = False) -> None:
@@ -24,7 +25,7 @@ def print_template_logo(info: bool = False) -> None:
     Args:
         info (bool): Se True, imprime também as informações da ferramenta.
     """
-    os.system("clear")
+    clear_console()
     console.print(TEMPLATE_LOGO)
 
     if info:
@@ -70,7 +71,7 @@ def validate_and_get_input(prompts: List[str]) -> List[str]:
             return inputs
 
         except ValueError as e:
-            os.system("clear")
+            clear_console()
             print_template_logo()
             print_and_record_log(str(e), "error")
 
@@ -102,7 +103,7 @@ def print_request_menu(menu: str) -> int:
             return int(choice)
 
         except ValueError as e:
-            os.system("clear")
+            clear_console()
             print_template_logo(info=True)
             print_and_record_log(str(e), "error")
 

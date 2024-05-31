@@ -2,6 +2,7 @@
 
 import os
 import re
+import subprocess
 from typing import List
 
 from encryptdef.template import TEMPLATE_IS_DIRECTORY
@@ -85,3 +86,11 @@ def write_file(new_file_path: str, processed_lines: List[str]) -> None:
     """
     with open(new_file_path, "w", encoding="utf-8") as file_a:
         file_a.writelines(processed_lines)
+
+
+def clear_console():
+    """Limpa o console de forma segura."""
+    if os.name == "posix":
+        subprocess.run(["clear"], check=False)
+    elif os.name == "nt":
+        subprocess.run(["cls"], shell=True, check=False)
