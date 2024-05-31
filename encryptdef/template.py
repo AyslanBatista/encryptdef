@@ -90,7 +90,7 @@ TEMPLATE_DECRYPTED_MESSAGE = """
 [bold green blink] 🔓 [D A D O S -- D E C R I P T A D O S] 🔓[/bold green blink]"""
 
 TEMPLATE_INVALID_KEY = """
- ⚠  KEY NÃO ECONTRADA, TENTE UMA CHAVE CORRETA!
+ ⚠  CHAVE NÃO ECONTRADA, TENTE UMA CHAVE CORRETA!
 """
 
 TEMPLATE_ENCRYPTED_FILE = """

@@ -29,8 +29,8 @@ jobs:
       - name: Install Project
         run: pip install '.[test,dev]' # instalando o programa em forma de test
 
-      # - name: Typing
-      #   run: mypy --ignore-missing-imports encryptdef
+      - name: Typing
+        run: mypy encryptdef
 
       - name: Look for style erros
         run: pflake8 # Rodando o flake para verificar se tem erro de formatação
@@ -59,17 +59,18 @@ jobs:
           python-version: ${{ matrix.python-version }} # Vai utilizar os python na versão especificada
 
       - name: Install Project
-        run: pip install '.[test,dev]' # instalando o programa em forma de test
+        run: pip install '.[test,dev]'
 
       - name: Run tests
-        run: pytest -v --cov=encryptdef --cov-report=xml --junitxml=test-results.xml # Rodando os test e gerando um arquivo como relatorio
+        run: pytest --cov=encryptdef --cov-report=xml --cov-report=term --junitxml=test-results.xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4.0.1
+        uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
+          files: coverage.xml
           fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2 # publicar os test unitarios que viram no arquivo xml

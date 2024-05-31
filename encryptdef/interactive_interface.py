@@ -125,6 +125,22 @@ def print_requesting_message(
     return data, key
 
 
+def print_success_message(
+    message: str,
+    template_title: str,
+    template_result: str,
+) -> None:
+    """
+    Imprime uma mensagem de sucesso e o depois o resultado.
+
+    Args:
+        message (str): A mensagem que foi criptografada ou descriptografada.
+        requesting (int): Número da opção escolhida pelo usuário.
+    """
+    print_and_record_log(template_title, "debug")
+    print_and_record_log(template_result % message, "debug")
+
+
 def print_requesting_file(template_file: str) -> List[str]:
     """
     Solicita nome do arquivo, chave e novo nome do arquivo do usuário.

@@ -18,7 +18,9 @@ fmt = logging.Formatter(
 )
 
 
-def configure_logger(logfile: Union[str, os.PathLike[str]] = None) -> None:
+def configure_logger(
+    logfile: Optional[Union[str, os.PathLike[str]]] = None
+) -> None:
     """Configura o logger com um handler de arquivo rotativo."""
     if logfile is None:
         # Obtém o diretório raiz do programa
@@ -60,13 +62,19 @@ def print_and_record_log(msg: str, style: Optional[str] = None) -> None:
     Returns:
         None
     """
+    # Garantir que a chave seja sempre uma string
+    if style is None:
+        style = "info"
+
     log_func = {
         "critical": log.critical,
         "error": log.error,
         "warning": log.warning,
         "info": log.info,
         "debug": log.debug,
-    }.get(style, log.info)
+    }.get(
+        style, log.info
+    )  # Garantir que sempre retornará uma função
 
     log_func(msg.strip())
-    console.print(msg, style=style or "info")
+    console.print(msg, style=style)

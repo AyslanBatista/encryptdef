@@ -1,6 +1,5 @@
 """Módulo responsável por todos os comandos CLI"""
 
-import re
 from importlib.metadata import version
 from typing import Any, List, Optional
 
@@ -8,6 +7,7 @@ import rich_click as click
 
 from encryptdef import core
 from encryptdef.template import TEMPLATE_DECRYPT_KEY, TEMPLATE_ENCRYPT_KEY
+from encryptdef.utils import assigning_a_name_file
 
 # Configurações do Rich Click
 click.rich_click.USE_RICH_MARKUP = True
@@ -72,10 +72,11 @@ def encrypt(
 
     if message:
         core.encrypt_message(message, key)
+
     elif file:
-        new_file = "encrypt-" + re.sub(r"encrypt-|decrypt-", "", file)
+        new_file = assigning_a_name_file(file, "encrypt-")
         data_list: List[str] = [file, key, new_file]
-        core.encrypt_file(data_list)
+        core.process_file(data_list, core.encrypt)
 
 
 @main.command()
@@ -106,7 +107,8 @@ def decrypt(
 
     if message:
         core.decrypt_message(message, key)
+
     elif file:
-        new_file = "decrypt-" + re.sub(r"encrypt-|decrypt-", "", file)
+        new_file = assigning_a_name_file(file, "decrypt-")
         data_list: List[str] = [file, key, new_file]
-        core.decrypt_file(data_list)
+        core.process_file(data_list, core.decrypt)
