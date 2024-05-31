@@ -18,6 +18,9 @@
 </p>
 
 ---
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/414c9aeeb56c41debb1094570754c8cb)](https://app.codacy.com/gh/AyslanBatista/encryptdef?utm_source=github.com&utm_medium=referral&utm_content=AyslanBatista/encryptdef&utm_campaign=Badge_Grade)
+
 **Encryptdef** é uma ferramenta de linha de comando em Python para encriptar e desencriptar dados e arquivos de forma segura, utilizando criptografia de última geração e uma chave de criptografia fornecida pelo usuário. Proteja suas informações confidenciais e arquivos importantes contra acesso não autorizado com o Encryptdef.
 
 ### Como Funciona
