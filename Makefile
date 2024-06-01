@@ -33,7 +33,7 @@ virtualenv: ## Criar ambiente virtual e instalar dependências
 
 lint: ## Executar linters
 	@echo "Executando linters..."
-	@$(VENV_BIN)/mypy encryptdef
+	@$(VENV_BIN)/mypy --ignore-missing-imports encryptdef
 	@$(VENV_BIN)/pflake8
 
 fmt: ## Formatar código

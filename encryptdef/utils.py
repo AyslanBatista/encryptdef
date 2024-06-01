@@ -2,10 +2,14 @@
 
 import os
 import re
-import subprocess
 from typing import List
 
+from colorama import init
+
 from encryptdef.template import TEMPLATE_IS_DIRECTORY
+
+# Inicializa colorama para garantir o funcionamento em sistemas Windows
+init()
 
 
 def get_new_file_path(file: str, new_file: str, current_dir: str) -> str:
@@ -91,6 +95,8 @@ def write_file(new_file_path: str, processed_lines: List[str]) -> None:
 def clear_console():
     """Limpa o console de forma segura."""
     if os.name == "posix":
-        subprocess.run(["clear"], check=False)
+        print("\033[H\033[J", end="")
     elif os.name == "nt":
-        subprocess.run(["cls"], shell=True, check=False)
+        # Inicializa o colorama, que é seguro e portátil
+        init()
+        print("\033c", end="")
