@@ -30,7 +30,7 @@ jobs:
         run: pip install '.[test,dev]' # instalando o programa em forma de test
 
       - name: Typing
-        run: mypy encryptdef
+        run: mypy --ignore-missing-imports encryptdef
 
       - name: Look for style erros
         run: pflake8 # Rodando o flake para verificar se tem erro de formatação
