@@ -8,7 +8,7 @@ from encryptdef.utils import read_file
 
 
 def teste_read_file_positive():
-    """Test function read_file"""
+    """Testando a função read_file"""
     file_name = "filte_test.txt"
     file_content = [
         "".join(sample(ascii_letters + digits, randint(1, 62))) + "\n"

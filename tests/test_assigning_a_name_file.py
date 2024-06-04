@@ -4,7 +4,7 @@ from encryptdef.utils import assigning_a_name_file
 
 
 def test_assigning_a_name_file_absolute():
-    """Test function assigning_a_name_file"""
+    """Testando a função assigning_a_name_file"""
     file = "/tmp/test/file-test-123.txt"
     name = "encrypt-"
     expected_result = "/tmp/test/encrypt-file-test-123.txt"
@@ -14,7 +14,7 @@ def test_assigning_a_name_file_absolute():
 
 
 def test_assigning_a_name_file_relative():
-    """Test function assigning_a_name_file"""
+    """Testando a função assigning_a_name_file"""
     file = "-123-file-test.txt"
     name = "decrypt-"
     expected_result = "decrypt--123-file-test.txt"

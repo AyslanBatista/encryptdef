@@ -29,6 +29,7 @@ from encryptdef.template import (
     TEMPLATE_DECRYPTED,
     TEMPLATE_DECRYPTED_FILE,
     TEMPLATE_DECRYPTED_MESSAGE,
+    TEMPLATE_EMPTY_FILE_ERROR,
     TEMPLATE_ENCRYPT_FILE,
     TEMPLATE_ENCRYPT_KEY,
     TEMPLATE_ENCRYPT_MESSAGE,
@@ -53,6 +54,10 @@ class InvalidEncryptedFormat(Exception):
 
 
 class InvalidKey(Exception):
+    """Formato de string criptografada inválido"""
+
+
+class EmptyFileError(Exception):
     """Formato de string criptografada inválido"""
 
 
@@ -227,7 +232,7 @@ def process_lines(
 
 
 def process_file_content(
-    file: str,
+    file_path: str,
     key: str,
     new_file_path: str,
     process_line_func: Callable[[str, str], Union[str, bool]],
@@ -236,7 +241,7 @@ def process_file_content(
     Processa o conteúdo de um arquivo e salva o resultado em um novo arquivo.
 
     Args:
-        file (str): Caminho do arquivo original.
+        file_path (str): Caminho do arquivo original.
         key (str): Chave para criptografar ou descriptografar.
         new_file_path (str): Caminho do novo arquivo.
         process_line_func (Callable[[str, str], Union[str, bool]]): Função para
@@ -245,12 +250,12 @@ def process_file_content(
     Returns:
         bool: True se o processamento for bem-sucedido, False caso contrário.
     """
-    lines = read_file(file)
+    lines = read_file(file_path)
+    if not lines:
+        raise EmptyFileError(TEMPLATE_EMPTY_FILE_ERROR % file_path)
+
     max_workers = print_get_max_workers(lines)
     processed_lines = process_lines(lines, key, process_line_func, max_workers)
-
-    if not processed_lines:
-        return False
 
     write_file(new_file_path, processed_lines)
     print_and_record_log(
@@ -281,24 +286,25 @@ def process_file(
     Returns:
         bool: True se o processamento for bem-sucedido, False caso contrário.
     """
-    file, key, new_file = data_list
-
     try:
-        new_file_path = get_new_file_path(file, new_file, CURRENT_DIR)
+        file_path, key, new_file = data_list
+        new_file_path = get_new_file_path(file_path, new_file, CURRENT_DIR)
         return process_file_content(
-            file, key, new_file_path, process_line_func
+            file_path, key, new_file_path, process_line_func
         )
 
     except FileNotFoundError:
-        print_and_record_log(TEMPLATE_FILE_NOT_FOUND % file, "error")
+        print_and_record_log(TEMPLATE_FILE_NOT_FOUND % file_path, "error")
         console.print(TEMPLATE_INFO_FILE)
         return False
 
     except (
         TypeError,
         IsADirectoryError,
+        ValueError,
         InvalidEncryptedFormat,
         InvalidKey,
+        EmptyFileError,
     ) as e:
         print_and_record_log(str(e), "error")
         return False
@@ -307,7 +313,7 @@ def process_file(
 def process_keyfile_and_args(
     keyfile: Optional[str],
     message: Optional[str],
-    file: Optional[str],
+    file_: Optional[str],
     template_key: str,
 ) -> str:
     """
@@ -321,7 +327,7 @@ def process_keyfile_and_args(
         a chave será solicitada.
         message (Optional[str]): Dados para criptografar ou descriptografar.
         Usado se 'file' não for fornecido.
-        file (Optional[str]): Caminho do arquivo a ser criptografado ou
+        file_ (Optional[str]): Caminho do arquivo a ser criptografado ou
         descriptografado. Usado se 'message' não for fornecido.
         template_key (str): Template para solicitar a chave ao usuário,
         se necessário.
@@ -335,12 +341,12 @@ def process_keyfile_and_args(
         SystemExit: Se o arquivo de chave não for encontrado, ou se a chave
         fornecida for inválida.
     """
-    if message and file:
+    if message and file_:
         raise click.UsageError(
             "Você deve fornecer apenas um dos argumentos: --message ou --file,"
-            "não ambos."
+            " não ambos."
         )
-    if not message and not file:
+    if not message and not file_:
         raise click.UsageError(
             "Você deve fornecer um dos argumentos: --message ou --file."
         )
@@ -355,12 +361,8 @@ def process_keyfile_and_args(
     else:
         while not key or key.isspace():
             key = console.input(template_key, password=True).strip()
-            if key.isspace():
+            if not key:
                 print_and_record_log(TEMPLATE_ERROR_EMPTY_FIELD, "error")
-
-    if key is None:
-        print_and_record_log(TEMPLATE_ERROR_EMPTY_FIELD, "error")
-        sys.exit(1)
 
     return key
 
