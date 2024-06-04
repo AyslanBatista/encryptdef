@@ -19,7 +19,7 @@ fmt = logging.Formatter(
 
 
 def configure_logger(
-    logfile: Optional[Union[str, os.PathLike[str]]] = None
+    log_level: str, logfile: Optional[Union[str, os.PathLike[str]]] = None
 ) -> None:
     """Configura o logger com um handler de arquivo rotativo."""
     if logfile is None:
@@ -32,10 +32,10 @@ def configure_logger(
         fh = handlers.RotatingFileHandler(
             logfile, maxBytes=10**6, backupCount=10
         )
-        fh.setLevel(LOG_LEVEL)
+        fh.setLevel(log_level)
         fh.setFormatter(fmt)
         log_instance.addHandler(fh)
-        log_instance.setLevel(LOG_LEVEL)
+        log_instance.setLevel(log_level)
 
 
 def get_logger() -> logging.Logger:
@@ -44,7 +44,7 @@ def get_logger() -> logging.Logger:
 
 
 # Configure o logger ao importar o módulo
-configure_logger()
+configure_logger(LOG_LEVEL)
 
 log = get_logger()
 

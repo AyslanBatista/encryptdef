@@ -8,7 +8,7 @@ from encryptdef.utils import get_new_file_path
 
 
 def test_get_new_file_path_positive():
-    """Test function get_new_file_path"""
+    """Testando a função get_new_file_path"""
     current_dir = os.getcwd()
     file = "file_test.txt"
     new_file = "encrypt_file_test.txt"
@@ -19,7 +19,7 @@ def test_get_new_file_path_positive():
 
 
 def test_get_new_file_path_is_directory_error():
-    """Test function get_new_file_path"""
+    """Testando a função get_new_file_path"""
     current_dir = os.getcwd()
     directoty = "new_directory"
     directoty_path = os.path.join(current_dir, directoty)
@@ -33,7 +33,7 @@ def test_get_new_file_path_is_directory_error():
 
 
 def test_get_new_file_path_positive_exact_file_path():
-    """Test function get_new_file_path"""
+    """Testando a função get_new_file_path"""
     file = "file_test.txt"
     new_file = "encrypt_file_test.txt"
 

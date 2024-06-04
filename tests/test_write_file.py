@@ -8,7 +8,7 @@ from encryptdef.utils import write_file
 
 
 def teste_write_file_positive():
-    """Test function write_file"""
+    """Testando a função write_file"""
     file_name = "filte_test.txt"
     file_content = [
         "".join(sample(ascii_letters + digits, randint(1, 62))) + "\n"

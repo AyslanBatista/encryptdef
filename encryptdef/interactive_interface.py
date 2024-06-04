@@ -65,7 +65,6 @@ def validate_and_get_input(prompts: List[str]) -> List[str]:
             inputs = [
                 get_user_input(prompt, "🔑" in prompt) for prompt in prompts
             ]
-
             if any(not input for input in inputs):
                 raise ValueError(TEMPLATE_ERROR_EMPTY_FIELD)
             return inputs
@@ -174,15 +173,17 @@ def print_get_max_workers(lines: List[str]) -> int:
                 max_workers = 1
 
             if len(lines) > 500:
-                use_more_cores = int(
-                    console.input(TEMPLATE_GET_MAX_WORKERS % max_workers)
-                )
+                user_input = console.input(
+                    TEMPLATE_GET_MAX_WORKERS % max_workers
+                ).strip()
                 console.print("\n", end="")
 
-                if not use_more_cores or use_more_cores > max_workers:
+                if not user_input.isdigit() or not (
+                    0 < int(user_input) <= max_workers
+                ):
                     raise ValueError(TEMPLATE_ERROR_INVALID_CHOICE)
 
-                return use_more_cores
+                return int(user_input)
 
             return 1
 

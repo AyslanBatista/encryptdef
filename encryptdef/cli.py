@@ -41,7 +41,7 @@ def main(ctx: Optional[click.Context] = None) -> None:
     correta, não será possível desencriptar os dados ou arquivos.**
     """
     if ctx is None:
-        ctx = click.Context(main)
+        ctx = click.Context(main)  # pragma: no cover
 
     if ctx.invoked_subcommand is None:
         core.interactive_mode()
