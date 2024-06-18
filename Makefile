@@ -3,7 +3,7 @@
 # Detectar o sistema operacional
 OS := $(shell uname)
 
-# Variáveis para simplificar comandos
+# Variáveis para simplificar os comandos
 VENV_DIR=.venv
 VENV_BIN=$(VENV_DIR)/bin
 PYTHON=$(VENV_BIN)/python

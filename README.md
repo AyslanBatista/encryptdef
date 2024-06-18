@@ -39,7 +39,6 @@ $ pip install encryptdef
 ```
 <code><b>Importante: Mantenha a chave de encriptação em segredo e não a perca. Sem a chave correta, não será possível desencriptar os dados ou arquivos.</b></code>
 
-
 ## Como usar:
 #### Modo CLI
 
