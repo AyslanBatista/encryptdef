@@ -24,7 +24,7 @@ Issues = "https://github.com/AyslanBatista/encryptdef/issues"
 
 # Lista de quais são os nomes dos entrypoints e os pacotes entrypoints
 [project.scripts]
-# Forma de usar diretamente o programa ex: encryptdef --version
+# Forma de usar diretamente o programa ex: encryptdef --version 
 encryptdef = "encryptdef.__main__:main"
 
 [build-system]
