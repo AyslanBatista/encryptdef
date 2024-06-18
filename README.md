@@ -1,7 +1,7 @@
 
 <p align="center">
   <a href="https://github.com/AyslanBatista/encryptdef">
-    <img src="/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 80%; height: auto;">
+    <img src="https://raw.githubusercontent.com/AyslanBatista/encryptdef/main/assets/logo_encryptdef.jpg" alt="encryptdef" style="width: 80%; height: auto;">
   </a>
 </p>
 
@@ -33,17 +33,9 @@ Encryptdef utiliza o método de criptografia **AES GCM (Galois/Counter Mode)** c
 - **Scrypt**: Função de derivação de chave resistente a ataques de força bruta, intensiva em memória e computacionalmente cara.
 
 ## Instalação
-1. Clone o repositório:
+
 ```bash
-git clone https://github.com/AyslanBatista/encryptdef.git
-```
-2. Navegue até o diretório do projeto:
-```bash
-cd encryptdef
-```
-3. Instale as dependências:
-```bash
-pip install -e .
+$ pip install encryptdef
 ```
 <code><b>Importante: Mantenha a chave de encriptação em segredo e não a perca. Sem a chave correta, não será possível desencriptar os dados ou arquivos.</b></code>
 
@@ -52,7 +44,7 @@ pip install -e .
 #### Modo CLI
 
 ```bash
-encryptdef --help
+$ encryptdef --help
 ```
 - Você pode encriptar e desencriptar textos e arquivos usando os argumentos `encrypt` e `decrypt`.
 - Para trabalhar com textos, use `--message=`.
@@ -60,7 +52,7 @@ encryptdef --help
  
 - Você pode informar a chave que está dentro de um arquivo usando `--keyfile=`. Caso você não passe o argumento, será solicitado a chave:
 ```bash
-encryptdef encrypt --message="testando"
+$ encryptdef encrypt --message="testando"
 🔑 DIGITE A CHAVE DE ENCRIPTAÇÃO:
 
 🔒 [D A D O S -- E N C R I P T A D O S] 🔒
@@ -71,6 +63,6 @@ encryptdef encrypt --message="testando"
 
 #### Modo Interativo
 ```bash
-encryptdef
+$ encryptdef
 ```
-![](./assets/encryptdef_interativo.gif)
+![](https://raw.githubusercontent.com/AyslanBatista/encryptdef/main/assets/encryptdef_interativo.gif)
