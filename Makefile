@@ -66,7 +66,7 @@ clean: ## Limpar arquivos desnecessários
 
 build: clean ## Construir pacotes
 	@echo "Construindo pacotes..."
-	@$(PYTHON) setup.py sdist bdist_wheel
+	@$(PYTHON) -m build 
 
 publish-test: build ## Publicar no TestPyPI
 	@echo "Publicando no TestPyPI..."

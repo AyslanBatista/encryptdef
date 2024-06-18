@@ -9,6 +9,8 @@ black
 isort
 
 # build
+build
+twine
 wheel
 
 # typing
