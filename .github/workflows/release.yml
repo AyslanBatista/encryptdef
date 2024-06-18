@@ -3,7 +3,7 @@ name: publish-and-release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
         body: "Release of version ${{ github.ref }}"
         draft: false
         prerelease: false
