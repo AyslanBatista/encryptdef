@@ -46,8 +46,8 @@ test = { file = "requirements.test.txt" }
 
 [tool.setuptools_scm]
 write_to = "encryptdef/VERSION.txt"
-version_scheme = "guess-next-dev"   # determina como a versão principal é calculada.
-local_scheme = "no-local-version"   # determina a parte local (como dev1+g7aff1b9.d20240529).
+version_scheme = "no-guess-dev"  # Altere para no-guess-dev
+local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
