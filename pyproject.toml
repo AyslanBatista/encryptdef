@@ -4,7 +4,8 @@ description = "Projeto em python para criptografar e descriptografar dados e arq
 authors = [{ name = "Ayslan Batista", email = "ayslan.batista@hotmail.com" }]
 requires-python = ">=3.10"
 license = { text = "MIT" }
-dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+version = "1.0.9"
+dynamic = ["readme", "dependencies", "optional-dependencies"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python",
@@ -28,9 +29,7 @@ Issues = "https://github.com/AyslanBatista/encryptdef/issues"
 encryptdef = "encryptdef.__main__:main"
 
 [build-system]
-# Setuptools acima da versão 45
-# setuptools_scm utilizar o git tag v1.0.1
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -43,9 +42,6 @@ dependencies = { file = "requirements.txt" }
 [tool.setuptools.dynamic.optional-dependencies]
 dev = { file = "requirements.dev.txt" }
 test = { file = "requirements.test.txt" }
-
-[tool.setuptools_scm]
-write_to = "encryptdef/VERSION"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
