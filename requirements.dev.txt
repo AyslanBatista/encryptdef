@@ -9,6 +9,7 @@ black
 isort
 
 # build
+bump2version
 build
 twine
 wheel

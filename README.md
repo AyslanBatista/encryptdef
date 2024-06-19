@@ -18,6 +18,13 @@
 <a href="https://github.com/AyslanBatista/encryptdef?tab=Unlicense-1-ov-file#readme" target="_blank">
     <img src="https://img.shields.io/badge/license-MIT-007EC7.svg?color=%2334D058" alt="License">
 </a>
+</a>
+<a href="https://pypi.python.org/pypi/encryptdef" target="_blank">
+    <img src="https://img.shields.io/pypi/v/encryptdef.svg?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+<a href="https://pypi.python.org/pypi/encryptdef" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/encryptdef.svg?color=%2334D058" alt="Supported Python versions">
+</a>
 </p>
 
 ---
